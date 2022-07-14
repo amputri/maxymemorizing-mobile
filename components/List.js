@@ -4,22 +4,22 @@ import { globalLink, language } from '../assets/axios/Link';
 
 const List = ({ route, navigation }) => {
   const [juz, setJuz] = useState([]);
-  const [surah, setSurah] = useState([]);  
+  const [surah, setSurah] = useState([]);
 
   useEffect(() => {
     fetchJuz();
     fetchSurah();
   }, []);
 
-  const nextRoute = 
+  const nextRoute =
     route.name === 'Sambung Ayat'
       ? 'Sambung'
       : route.name === 'Melengkapi Ayat'
-      ? 'Melengkapi'
-      : 'Baca';
+        ? 'Melengkapi'
+        : 'Baca';
 
   async function fetchJuz() {
-    const res = await globalLink.get(`/juzs`); 
+    const res = await globalLink.get(`/juzs`);
     setJuz(res.data.juzs);
     console.log('juz');
   }
@@ -29,7 +29,7 @@ const List = ({ route, navigation }) => {
     setSurah(res.data.chapters);
     console.log('surah');
   }
- 
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
@@ -49,7 +49,7 @@ const List = ({ route, navigation }) => {
                   surah: surah,
                 })
               }>
-              <Text>Juz {val.juz_number}</Text>
+              <Text style={{ color: 'black' }}>Juz {val.juz_number}</Text>
             </TouchableOpacity>
             {Object.keys(val.verse_mapping).map((key) =>
               val.verse_mapping[key].split('-')[0] === '1' ? (
@@ -69,7 +69,7 @@ const List = ({ route, navigation }) => {
                     })
                   }>
                   <View style={{ width: 35 }}>
-                    <Text style={{ textAlign: 'right' }}>{key}</Text>
+                    <Text style={{ textAlign: 'right', color: 'black' }}>{key}</Text>
                   </View>
                   <View
                     style={{
@@ -77,18 +77,18 @@ const List = ({ route, navigation }) => {
                       paddingVertical: 5,
                       paddingHorizontal: 10,
                     }}>
-                    <Text style={{ fontWeight: 'bold' }}>
+                    <Text style={{ fontWeight: 'bold', color: 'black' }}>
                       {surah[key - 1]?.name_simple}
                     </Text>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 11, color: 'black' }}>
                       {surah[key - 1]?.translated_name.name} -{' '}
                       {surah[key - 1]?.verses_count} Ayat
                     </Text>
                   </View>
                   <View style={{ width: 25 }}>
-                    <Text>
-                      {parseInt(surah[key - 1]?.pages[0]) -
-                        (val.juz_number * 20 - 20 + 1)}
+                    <Text style={{ color: 'black' }}>
+                      {`${parseInt(surah[key - 1]?.pages[0]) -
+                        (val.juz_number * 20 - 20 + 1)}`}
                     </Text>
                   </View>
                 </TouchableOpacity>

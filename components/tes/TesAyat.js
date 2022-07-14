@@ -14,21 +14,21 @@ import {
   wordFields,
   translations,
   reciter,
-  audioLink,
 } from '../../assets/axios/Link';
 import { Divider, Avatar } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 
-const TesAyat = ({ navigation }) => {
+const TesAyat = () => {
   const [surah, setSurah] = useState([]);
   const [ayat, setAyat] = useState([]);
   const [page, setPage] = useState([]);
-  const [id, setIdSurah] = useState(1);
+  const [id, setIdSurah] = useState(Math.floor(Math.random() * 114) + 1);
   const [nomor, setNomorAyat] = useState(1);
   const [visual, setVisual] = useState([]);
 
   const [visibleSurah, setVisibleSurah] = useState(false);
   const [visibleInfo, setVisibleInfo] = useState(false);
+  const [visibleBantuan, setVisibleBantuan] = useState(false);
 
   const [jawaban, setJawaban] = useState(false);
 
@@ -55,7 +55,7 @@ const TesAyat = ({ navigation }) => {
     setAyat(res.data.verse);
 
     res.data.verse.page_number !== page[0]?.page_number ||
-    page[0]?.page_number === undefined
+      page[0]?.page_number === undefined
       ? fetchPage(res.data.verse.page_number)
       : null;
 
@@ -86,20 +86,21 @@ const TesAyat = ({ navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <View
+        <TouchableOpacity
+          onPress={() => setVisibleSurah(true)}
           style={{
             paddingVertical: 3,
-            paddingHorizontal: 5,
+            paddingHorizontal: 10,
             backgroundColor: 'lightblue',
             borderRadius: 5,
             shadowRadius: 3,
           }}>
-          <Text onPress={() => setVisibleSurah(true)}>
+          <Text style={{ color: 'black' }}>
             {id}. {surah[id - 1]?.name_simple}
           </Text>
-        </View>
-        <Text>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
-        <Text>Juz {ayat.juz_number}</Text>
+        </TouchableOpacity>
+        <Text style={{ color: 'black' }}>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
+        <Text style={{ color: 'black' }}>Juz {ayat.juz_number}</Text>
       </View>
       <Divider />
       <ImageBackground
@@ -125,7 +126,47 @@ const TesAyat = ({ navigation }) => {
             }}>
             {page.map((value, index) =>
               value.words?.map((val, ind) =>
-                val.line_number === i + 1 ? (
+                (val.line_number === i + 3 &&
+                  value.verse_number === 1 &&
+                  ind === 0) ||
+                  (i === 14 &&
+                    index === 0 &&
+                    ind === 0 &&
+                    val.line_number === i + 1) ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    سورۃ{'  '}
+                    {
+                      `${surah[parseInt(value.verse_key.split(':')[0]) - 1]
+                        ?.name_arabic}`
+                    }
+                  </Text>
+                ) : val.line_number === i + 2 &&
+                  value.verse_number === 1 &&
+                  ind === 0 && id !== 1 && id !== 9 ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْم
+                  </Text>
+                ) : val.line_number === i + 1 ? (
                   val.char_type_name === 'end' ? (
                     <Text
                       key={`${i}-${index}-${ind}`}
@@ -193,10 +234,23 @@ const TesAyat = ({ navigation }) => {
           }}>
           <TouchableOpacity
             style={{ paddingVertical: 5 }}
-            onPress={() => setVisibleInfo(true)}>
+            onPress={() =>
+              setNomorAyat(
+                Math.floor(Math.random() * surah[id - 1]?.verses_count) + 1
+              )
+            }>
             <Text style={{ textAlign: 'center', color: 'white' }}>
-              Detail Ayat
+              Selanjutnya
             </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            marginVertical: 5,
+            marginHorizontal: 10,
+          }}>
+          <TouchableOpacity onPress={() => setVisibleBantuan(true)}>
+            <Avatar.Icon size={32} icon="help" />
           </TouchableOpacity>
         </View>
         <View
@@ -209,13 +263,9 @@ const TesAyat = ({ navigation }) => {
           }}>
           <TouchableOpacity
             style={{ paddingVertical: 5 }}
-            onPress={() =>
-              setNomorAyat(
-                Math.floor(Math.random() * surah[id - 1]?.verses_count) + 1
-              )
-            }>
+            onPress={() => setVisibleInfo(true)}>
             <Text style={{ textAlign: 'center', color: 'white' }}>
-              Selanjutnya
+              Lihat Kunci
             </Text>
           </TouchableOpacity>
         </View>
@@ -230,14 +280,19 @@ const TesAyat = ({ navigation }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleSurah(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -255,7 +310,7 @@ const TesAyat = ({ navigation }) => {
                     setNomorAyat(1);
                     setVisibleSurah(false);
                   }}>
-                  <Text>
+                  <Text style={{ color: 'black' }}>
                     {i + 1}. {surah[i].name_simple}
                   </Text>
                 </TouchableOpacity>
@@ -281,12 +336,12 @@ const TesAyat = ({ navigation }) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {surah[id - 1]?.name_simple} ayat {nomor}
             </Text>
-            <Text onPress={() => setVisibleInfo(false)}>
+            <TouchableOpacity onPress={() => setVisibleInfo(false)}>
               <Avatar.Icon size={32} icon="close" />
-            </Text>
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -308,10 +363,10 @@ const TesAyat = ({ navigation }) => {
                           alignItems: 'center',
                         }}>
                         <Text
-                          style={{ fontFamily: 'Amiri-Regular', fontSize: 16 }}>
+                          style={{ fontFamily: 'Amiri-Regular', fontSize: 16, color: 'black' }}>
                           {value.text_uthmani}
                         </Text>
-                        <Text>{value.translation.text}</Text>
+                        <Text style={{ color: 'black' }}>{value.translation.text}</Text>
                       </View>
                     ))}
                     <View></View>
@@ -320,14 +375,47 @@ const TesAyat = ({ navigation }) => {
                 </View>
               ) : null}
               <View style={{ marginTop: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Terjemah</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Terjemah</Text>
                 {ayat.translations?.map((value, index) => (
-                  <Text key={index} style={{ marginVertical: 10 }}>{value.text}</Text>
+                  <View key={index} style={{ marginVertical: 10 }}>
+                    <RenderHtml source={{ html: value.text }} />
+                  </View>
                 ))}
                 <Divider />
               </View>
             </View>
           </ScrollView>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        visible={visibleBantuan}
+        onRequestClose={() => {
+          setVisibleBantuan(false);
+        }}>
+        <View style={{ flexDirection: 'column', flex: 1 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              margin: 10,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              backgroundColor: 'lightblue',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Cara Tes Ayat
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleBantuan(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ padding: 20 }}>
+            <Text style={{ color: 'mediumblue', paddingBottom: 10 }}>1. Tebak dan lafazkan ayat dengan kunci surah, halaman, juz, terjemah, atau visualisasi ayat yang ditampilkan.</Text>
+            <Text style={{ color: 'mediumblue', paddingBottom: 10 }}>2. Klik posisi ayat sesuai pada mushaf/pemetaan ayat dalam Al-Qur'an untuk mengecek jawaban.</Text>
+            <Text style={{ color: 'mediumblue' }}>3. Jika benar, tulisan ayat akan tampil. Dan arti per kata dapat dilihat dengan klik tombol "Lihat Kunci".</Text>
+          </View>
         </View>
       </Modal>
     </View>

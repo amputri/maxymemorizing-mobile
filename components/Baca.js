@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { globalLink, wordFields } from '../assets/axios/Link';
 import { Divider, Avatar } from 'react-native-paper';
 
@@ -29,14 +29,14 @@ const Baca = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text>
-          {parseInt(page[0]?.verse_key.split(':')[0])}.{' '}
-          {surah[parseInt(page[0]?.verse_key.split(':')[0]) - 1]?.name_simple}
+        <Text style={{ color: 'black' }}>
+          {`${parseInt(page[0]?.verse_key.split(':')[0])}`}.{' '}
+          {`${surah[parseInt(page[0]?.verse_key.split(':')[0]) - 1]?.name_simple}`}
         </Text>
-        <Text>
-          {parseInt(halamanPage) - (page[0]?.juz_number * 20 - 20 + 1)}
+        <Text style={{ color: 'black' }}>
+          {`${parseInt(halamanPage) - (page[0]?.juz_number * 20 - 20 + 1)}`}
         </Text>
-        <Text>Juz {page[0]?.juz_number}</Text>
+        <Text style={{ color: 'black' }}>Juz {page[0]?.juz_number}</Text>
       </View>
       <Divider />
       {[...Array(15)].map((x, i) => (
@@ -61,10 +61,6 @@ const Baca = ({ route, navigation }) => {
               (val.line_number === i + 3 &&
                 value.verse_number === 1 &&
                 ind === 0) ||
-              ((halamanPage === 1 || halamanPage === 187) &&
-                i === 0 &&
-                index === 0 &&
-                ind === 0) ||
               (i === 14 &&
                 index === 0 &&
                 ind === 0 &&
@@ -82,13 +78,13 @@ const Baca = ({ route, navigation }) => {
                   }}>
                   سورۃ{'  '}
                   {
-                    surah[parseInt(value.verse_key.split(':')[0]) - 1]
-                      ?.name_arabic
+                    `${surah[parseInt(value.verse_key.split(':')[0]) - 1]
+                      ?.name_arabic}`
                   }
                 </Text>
               ) : val.line_number === i + 2 &&
                 value.verse_number === 1 &&
-                ind === 0 ? (
+                ind === 0 && halamanPage !== 1 && halamanPage !== 9 ? (
                 <Text
                   key={`${i}-${index}-${ind}`}
                   style={{
@@ -140,18 +136,18 @@ const Baca = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text
+        <TouchableOpacity
           onPress={() =>
             halamanPage < 604 ? setHalamanPage(halamanPage + 1) : null
           }>
           <Avatar.Icon size={32} icon="arrow-left" />
-        </Text>
-        <Text
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() =>
             halamanPage > 1 ? setHalamanPage(halamanPage - 1) : null
           }>
           <Avatar.Icon size={32} icon="arrow-right" />
-        </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

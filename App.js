@@ -3,10 +3,11 @@ import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { Image } from 'react-native';
+import Splashscreen from './components/Splashscreen';
 import Beranda from './components/Beranda';
 import Pendalaman from './components/postingan/Pendalaman';
 import Materi from './components/postingan/Materi';
-import AyatMateri from './components/postingan/AyatMateri';     
+import AyatMateri from './components/postingan/AyatMateri';
 import List from './components/List';
 import Baca from './components/Baca';
 import Surah from './components/card/Surah';
@@ -71,6 +72,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Splash"
+          component={Splashscreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Root"
           component={DraweNav}

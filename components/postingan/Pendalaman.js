@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Button,
   View,
   Text,
   ScrollView,
@@ -48,6 +47,7 @@ const Pendalaman = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ padding: 20 }}>
+        <Text style={{ color: 'black', paddingBottom: 10 }}>Pilih Pokok Materi :</Text>
         <TouchableOpacity
           style={{
             marginBottom: 20,
@@ -57,8 +57,9 @@ const Pendalaman = ({ navigation }) => {
             shadowRadius: 2,
           }}
           onPress={() => setVisiblePokok(true)}>
-          <Text>{pokok}</Text>
+          <Text style={{ color: 'black' }}>{pokok}</Text>
         </TouchableOpacity>
+        <Text style={{ color: 'black', paddingBottom: 10 }}>Pilih Kategori :</Text>
         <TouchableOpacity
           style={{
             marginBottom: 20,
@@ -68,37 +69,39 @@ const Pendalaman = ({ navigation }) => {
             shadowRadius: 2,
           }}
           onPress={() => setVisibleKategori(true)}>
-          <Text>{kategori}</Text>
+          <Text style={{ color: 'black' }}>{kategori}</Text>
         </TouchableOpacity>
         <Divider />
       </View>
       <View style={{ flex: 1 }}>
+        <View style={{ paddingHorizontal: 20 }}>
+          <Text style={{ color: 'black', textAlign: 'center' }}>Daftar Tema</Text>
+        </View>
         <ScrollView>
           {temaData.map((value, index) => (
             <View key={index} style={{ margin: 20 }}>
               <Card>
                 <Card.Content>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() =>
+                    navigation.navigate('Materi', {
+                      pokok: pokok,
+                      kategori: kategori,
+                      tema: value,
+                    })
+                  }>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                      <Text style={{ fontWeight: 'bold', fontSize: 12 }}>
+                      <Text style={{ fontWeight: 'bold', fontSize: 12, color: 'black' }}>
                         {value.urutan}
                         {'. '}
                       </Text>
-                      <Text style={{ fontSize: 12 }}>{value.judul}</Text>
+                      <Text style={{ fontSize: 12, color: 'black' }}>{value.judul}</Text>
                     </View>
                     <View style={{ marginStart: 20 }}>
-                      <Text
-                        onPress={() =>
-                          navigation.navigate('Materi', {
-                            pokok: pokok,
-                            kategori: kategori,
-                            tema: value,
-                          })
-                        }>
+                      <Text>
                         <Avatar.Icon size={30} icon="arrow-right" />
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 </Card.Content>
               </Card>
             </View>
@@ -115,14 +118,19 @@ const Pendalaman = ({ navigation }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Kategori</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Kategori
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleKategori(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -140,7 +148,7 @@ const Pendalaman = ({ navigation }) => {
                     setKategori(x.kategori);
                     setVisibleKategori(false);
                   }}>
-                  <Text>
+                  <Text style={{ color: 'black' }}>
                     {x.urutan}. {x.kategori}
                   </Text>
                 </TouchableOpacity>
@@ -159,14 +167,19 @@ const Pendalaman = ({ navigation }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Pokok Materi</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Pokok Materi
+            </Text>
+            <TouchableOpacity onPress={() => setVisiblePokok(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -182,7 +195,7 @@ const Pendalaman = ({ navigation }) => {
                   setPokok('Aqidah');
                   setVisiblePokok(false);
                 }}>
-                <Text>Aqidah</Text>
+                <Text style={{ color: 'black' }}>Aqidah</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -196,7 +209,7 @@ const Pendalaman = ({ navigation }) => {
                   setPokok('Ibadah');
                   setVisiblePokok(false);
                 }}>
-                <Text>Ibadah</Text>
+                <Text style={{ color: 'black' }}>Ibadah</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -210,7 +223,7 @@ const Pendalaman = ({ navigation }) => {
                   setPokok('Muamalah');
                   setVisiblePokok(false);
                 }}>
-                <Text>Muamalah</Text>
+                <Text style={{ color: 'black' }}>Muamalah</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -224,7 +237,7 @@ const Pendalaman = ({ navigation }) => {
                   setPokok('Akhlaq');
                   setVisiblePokok(false);
                 }}>
-                <Text>Akhlaq</Text>
+                <Text style={{ color: 'black' }}>Akhlaq</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

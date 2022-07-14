@@ -11,7 +11,6 @@ import {
 import {
   globalLink,
   language,
-  wordFields,
   link,
 } from '../../assets/axios/Link';
 import { Divider, Avatar } from 'react-native-paper';
@@ -51,9 +50,9 @@ const Surah = () => {
 
   useEffect(() => {
     nomor === id &&
-    arti === surah[id - 1]?.translated_name.name &&
-    jumlahAyat === surah[id - 1]?.verses_count &&
-    tempatTurun === surah[id - 1]?.revelation_place
+      arti === surah[id - 1]?.translated_name.name &&
+      jumlahAyat === surah[id - 1]?.verses_count &&
+      tempatTurun === surah[id - 1]?.revelation_place
       ? setJawaban(true)
       : setJawaban(false); // eslint-disable-next-line
   }, [nomor, arti, jumlahAyat, tempatTurun]);
@@ -88,19 +87,20 @@ const Surah = () => {
           paddingHorizontal: 10,
         }}>
         {visual.kata_kunci ? (
-          <Text style={{ fontWeight: 'bold' }}>{visual.kata_kunci}</Text>
+          <Text style={{ fontWeight: 'bold', color: 'black' }}>{visual.kata_kunci}</Text>
         ) : null}
-        <View
+        <TouchableOpacity
+          onPress={() => setVisibleNomor(true)}
           style={{
             paddingVertical: 3,
-            paddingHorizontal: 5,
+            paddingHorizontal: 10,
             backgroundColor: 'lightblue',
             borderRadius: 5,
             shadowRadius: 3,
           }}>
-          <Text onPress={() => setVisibleNomor(true)}>{nomor}</Text>
-        </View>
-        <Text>{surah[id - 1]?.name_simple}</Text>
+          <Text style={{ color: 'black' }}>{nomor}</Text>
+        </TouchableOpacity>
+        <Text style={{ color: 'black' }}>{surah[id - 1]?.name_simple}</Text>
       </View>
       <Divider />
       <View style={{ flex: 1 }}>
@@ -123,8 +123,8 @@ const Surah = () => {
               source={
                 visual.gambar && jawaban
                   ? {
-                      uri: visual.gambar,
-                    }
+                    uri: visual.gambar,
+                  }
                   : require('../../assets/logo.png')
               }
             />
@@ -141,7 +141,7 @@ const Surah = () => {
               paddingVertical: 5,
               justifyContent: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {surah[id - 1]?.name_arabic}
             </Text>
           </View>
@@ -152,29 +152,31 @@ const Surah = () => {
               paddingHorizontal: 10,
               paddingVertical: 5,
             }}>
-            <View
+            <TouchableOpacity
+              onPress={() => setVisibleArti(true)}
               style={{
                 paddingVertical: 3,
-                paddingHorizontal: 5,
+                paddingHorizontal: 10,
                 backgroundColor: 'lightblue',
                 borderRadius: 5,
                 shadowRadius: 3,
               }}>
-              <Text onPress={() => setVisibleArti(true)}>{arti}</Text>
-            </View>
-            <Text style={{ paddingHorizontal: 10 }}>-</Text>
-            <View
+              <Text style={{ color: 'black' }}>{arti}</Text>
+            </TouchableOpacity>
+            <Text style={{ paddingHorizontal: 10, color: 'black' }}>-</Text>
+            <TouchableOpacity
+              onPress={() => setVisibleJumlahAyat(true)}
               style={{
                 paddingVertical: 3,
-                paddingHorizontal: 5,
+                paddingHorizontal: 10,
                 backgroundColor: 'lightblue',
                 borderRadius: 5,
                 shadowRadius: 3,
               }}>
-              <Text onPress={() => setVisibleJumlahAyat(true)}>
+              <Text style={{ color: 'black' }}>
                 {jumlahAyat} ayat
               </Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <Divider />
           <View
@@ -183,56 +185,65 @@ const Surah = () => {
               paddingHorizontal: 10,
               paddingVertical: 5,
             }}>
-            <Text style={{ paddingHorizontal: 5 }}>
+            <Text style={{ paddingHorizontal: 5, color: 'black' }}>
               diturunkan ke-{surah[id - 1]?.revelation_order} - golongan surah
             </Text>
-            <View
+            <TouchableOpacity
+              onPress={() => setVisibleTempatTurun(true)}
               style={{
                 paddingVertical: 3,
-                paddingHorizontal: 5,
+                paddingHorizontal: 10,
                 backgroundColor: 'lightblue',
                 borderRadius: 5,
                 shadowRadius: 3,
               }}>
-              <Text onPress={() => setVisibleTempatTurun(true)}>
+              <Text style={{ color: 'black' }}>
                 {tempatTurun}
               </Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <Divider />
-          <View
-            style={{
-              flexDirection: 'column',
-              padding: 10,
-            }}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>
-              Kandungan
-            </Text>
-            <View style={{ marginBottom: 10 }}>
-              <RenderHtml source={{ html: jawaban ? visual.uraian : null }} />
-            </View>
-            <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-              Uraian Singkat
-            </Text>
-            <View style={{ marginBottom: 10 }}>
-              <RenderHtml
-                source={{ html: jawaban ? surahInfo.short_text : null }}
-              />
-            </View>
-            <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Uraian</Text>
-            <View style={{ marginBottom: 10 }}>
-              <RenderHtml source={{ html: jawaban ? surahInfo.text : null }} />
-            </View>
-            <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-              Sumber Uraian
-            </Text>
-            <Text style={{ marginBottom: 10, fontStyle: 'italic' }}>
-              {jawaban ? surahInfo.source : null}
-            </Text>
-          </View>
+          {
+            jawaban ? (
+              <View
+                style={{
+                  flexDirection: 'column',
+                  padding: 10,
+                }}>
+                <Text style={{ fontWeight: 'bold', marginBottom: 10, color: 'black' }}>
+                  Kandungan
+                </Text>
+                <View style={{ marginBottom: 10 }}>
+                  <RenderHtml source={{ html: jawaban ? visual.uraian : null }} />
+                </View>
+                <Divider />
+                <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>
+                  Uraian Singkat
+                </Text>
+                <View style={{ marginBottom: 10 }}>
+                  <RenderHtml
+                    source={{ html: jawaban ? surahInfo.short_text : null }}
+                  />
+                </View>
+                <Divider />
+                <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>Uraian</Text>
+                <View style={{ marginBottom: 10 }}>
+                  <RenderHtml source={{ html: jawaban ? surahInfo.text : null }} />
+                </View>
+                <Divider />
+                <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>
+                  Sumber Uraian
+                </Text>
+                <Text style={{ marginBottom: 10, fontStyle: 'italic', color: 'black' }}>
+                  {jawaban ? surahInfo.source : null}
+                </Text>
+              </View>
+            ) : (
+              <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20, paddingHorizontal: 10 }}>
+                <Text style={{ color: 'deeppink', textAlign: 'center', fontStyle: 'italic' }}>Pilih nomor, arti, jumlah ayat, dan golongan surah dengan benar untuk menampilkan gambar dan urian surah..</Text>
+              </View>
+            )
+          }
         </ScrollView>
       </View>
       <Divider />
@@ -263,14 +274,19 @@ const Surah = () => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Nomor Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Nomor Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleNomor(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -287,7 +303,7 @@ const Surah = () => {
                     setNomor(i + 1);
                     setVisibleNomor(false);
                   }}>
-                  <Text>Urutan ke-{i + 1}</Text>
+                  <Text style={{ color: 'black' }}>Urutan ke-{i + 1}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -304,14 +320,19 @@ const Surah = () => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Arti Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Arti Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleArti(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -328,7 +349,7 @@ const Surah = () => {
                     setArti(x.translated_name.name);
                     setVisibleArti(false);
                   }}>
-                  <Text>{x.translated_name.name}</Text>
+                  <Text style={{ color: 'black' }}>{x.translated_name.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -345,14 +366,19 @@ const Surah = () => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Jumlah Ayat Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Jumlah Ayat Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleJumlahAyat(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -369,7 +395,7 @@ const Surah = () => {
                     setJumlahAyat(i + 1);
                     setVisibleJumlahAyat(false);
                   }}>
-                  <Text>{i + 1} ayat</Text>
+                  <Text style={{ color: 'black' }}>{i + 1} ayat</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -386,14 +412,19 @@ const Surah = () => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Tempat Turun Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Golongan Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleTempatTurun(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -408,7 +439,7 @@ const Surah = () => {
                   setTempatTurun('makkah');
                   setVisibleTempatTurun(false);
                 }}>
-                <Text>makkah</Text>
+                <Text style={{ color: 'black' }}>makkah</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -421,7 +452,7 @@ const Surah = () => {
                   setTempatTurun('madinah');
                   setVisibleTempatTurun(false);
                 }}>
-                <Text>madinah</Text>
+                <Text style={{ color: 'black' }}>madinah</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

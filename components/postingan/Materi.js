@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, Image, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { link } from '../../assets/axios/Link';
 import { Divider } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
@@ -27,11 +27,11 @@ const Materi = ({ route, navigation }) => {
             paddingVertical: 5,
             paddingHorizontal: 10,
           }}>
-          <Text>{pokok}</Text>
+          <Text style={{ color: 'black' }}>{pokok}</Text>
           <Divider />
-          <Text>{kategori}</Text>
+          <Text style={{ color: 'black' }}>{kategori}</Text>
           <Divider />
-          <Text style={{ fontWeight: 'bold' }}>
+          <Text style={{ fontWeight: 'bold', color: 'black' }}>
             {tema.urutan}
             {'. '}
             {tema.judul}
@@ -66,7 +66,7 @@ const Materi = ({ route, navigation }) => {
             }}>
             {materi.map((value, index) => (
               <View key={index}>
-                <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>
+                <Text style={{ fontWeight: 'bold', marginVertical: 10, color: 'black' }}>
                   {value.urutan}
                   {'. '}
                   {value.judul}
@@ -75,28 +75,30 @@ const Materi = ({ route, navigation }) => {
                   <RenderHtml source={{ html: value.materi }} />
                   {value.materi.split('[QS ').map((x, i) =>
                     i > 0 ? (
-                      <Text
-                        key={`${index}-${i}`}
-                        style={{
-                          paddingVertical: 3,
-                          marginBottom: 5,
-                          paddingStart: 5,
-                          backgroundColor: 'bisque',
-                        }}
-                        onPress={() =>
-                          navigation.navigate('Ayat Materi', {
-                            key: x.split(']')[0],
-                          })
-                        }>
-                        {"Lihat Qur'an Surah"} {x.split(']')[0]}
-                      </Text>
+                      <TouchableOpacity onPress={() =>
+                        navigation.navigate('Ayat Materi', {
+                          key: x.split(']')[0],
+                        })
+                      }>
+                        <Text
+                          key={`${index}-${i}`}
+                          style={{
+                            paddingVertical: 3,
+                            marginBottom: 5,
+                            paddingStart: 5,
+                            backgroundColor: 'bisque',
+                            color: 'blue'
+                          }}>
+                          {"Lihat Qur'an Surah"} {x.split(']')[0]}
+                        </Text>
+                      </TouchableOpacity>
                     ) : null
                   )}
                 </View>
                 <Divider />
               </View>
             ))}
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>
               Sumber Uraian
             </Text>
             <View style={{ marginBottom: 10 }}>

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { globalLink, wordFields } from '../../assets/axios/Link';
 import { Divider, Avatar } from 'react-native-paper';
 
-const MelengkapiAyat = ({ route, navigation }) => {
+const MelengkapiAyat = ({ route }) => {
   const { halaman, surah } = route.params;
   const [page, setPage] = useState([]);
   const [halamanPage, setHalamanPage] = useState(halaman);
 
   const [tampil, setTampil] = useState('');
   const [klik, setKlik] = useState('');
+  const [visibleBantuan, setVisibleBantuan] = useState(false);
 
   useEffect(() => {
     fetchPage();
@@ -20,14 +21,17 @@ const MelengkapiAyat = ({ route, navigation }) => {
   function setOptionTampil() {
     var temp;
     for (var i = 1; i <= 15; i++) {
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 4) + 1}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 8) + 5}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 12) + 9}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 16) + 13}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 20) + 17}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 24) + 21}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 28) + 25}:`;
-      temp = `${temp}:${i}/${Math.floor(Math.random() * 32) + 29}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 3) + 1}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 6) + 4}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 9) + 7}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 12) + 10}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 15) + 13}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 18) + 16}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 21) + 19}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 24) + 22}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 27) + 25}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 30) + 28}:`;
+      temp = `${temp}:${i}/${Math.floor(Math.random() * 33) + 31}:`;
     }
     setTampil(temp);
   }
@@ -49,14 +53,14 @@ const MelengkapiAyat = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text>
-          {parseInt(page[0]?.verse_key.split(':')[0])}.{' '}
-          {surah[parseInt(page[0]?.verse_key.split(':')[0]) - 1]?.name_simple}
+        <Text style={{ color: 'black' }}>
+          {`${parseInt(page[0]?.verse_key.split(':')[0])}`}.{' '}
+          {`${surah[parseInt(page[0]?.verse_key.split(':')[0]) - 1]?.name_simple}`}
         </Text>
-        <Text>
-          {parseInt(halamanPage) - (page[0]?.juz_number * 20 - 20 + 1)}
+        <Text style={{ color: 'black' }}>
+          {`${parseInt(halamanPage) - (page[0]?.juz_number * 20 - 20 + 1)}`}
         </Text>
-        <Text>Juz {page[0]?.juz_number}</Text>
+        <Text style={{ color: 'black' }}>Juz {page[0]?.juz_number}</Text>
       </View>
       <Divider />
       {[...Array(15)].map((x, i) => (
@@ -80,14 +84,10 @@ const MelengkapiAyat = ({ route, navigation }) => {
               (val.line_number === i + 3 &&
                 value.verse_number === 1 &&
                 ind === 0) ||
-              ((halamanPage === 1 || halamanPage === 187) &&
-                i === 0 &&
-                index === 0 &&
-                ind === 0) ||
-              (i === 14 &&
-                index === 0 &&
-                ind === 0 &&
-                val.line_number === i + 1) ? (
+                (i === 14 &&
+                  index === 0 &&
+                  ind === 0 &&
+                  val.line_number === i + 1) ? (
                 <Text
                   key={`${i}-${index}-${ind}`}
                   style={{
@@ -97,16 +97,17 @@ const MelengkapiAyat = ({ route, navigation }) => {
                     paddingHorizontal: 1,
                     fontSize: 16,
                     fontFamily: 'Amiri-Bold',
+                    color: 'black'
                   }}>
                   سورۃ{'  '}
                   {
-                    surah[parseInt(value.verse_key.split(':')[0]) - 1]
-                      ?.name_arabic
+                    `${surah[parseInt(value.verse_key.split(':')[0]) - 1]
+                      ?.name_arabic}`
                   }
                 </Text>
               ) : val.line_number === i + 2 &&
                 value.verse_number === 1 &&
-                ind === 0 ? (
+                ind === 0 && halamanPage !== 1 && halamanPage !== 187 ? (
                 <Text
                   key={`${i}-${index}-${ind}`}
                   style={{
@@ -117,6 +118,7 @@ const MelengkapiAyat = ({ route, navigation }) => {
                     paddingHorizontal: 1,
                     fontSize: 16,
                     fontFamily: 'Amiri-Bold',
+                    color: 'black'
                   }}>
                   بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْم
                 </Text>
@@ -136,17 +138,17 @@ const MelengkapiAyat = ({ route, navigation }) => {
                   <Text
                     key={`${i}-${index}-${ind}`}
                     onPress={() =>
-                      !klik.includes(`:${val.line_number}/${val.position}:`) &&
-                      tampil.includes(`:${val.line_number}/${val.position}:`)
-                        ? setKlik(`${klik}:${val.line_number}/${val.position}:`)
+                      !klik.includes(`:${val.line_number}/${ind}:-${index}:`) &&
+                        tampil.includes(`:${val.line_number}/${ind}:`)
+                        ? setKlik(`${klik}:${val.line_number}/${ind}:-${index}:`)
                         : null
                     }
                     style={{
                       color:
                         !tampil.includes(
-                          `:${val.line_number}/${val.position}:`
+                          `:${val.line_number}/${ind}:`
                         ) ||
-                        klik.includes(`:${val.line_number}/${val.position}:`)
+                          klik.includes(`:${val.line_number}/${ind}:-${index}:`)
                           ? 'black'
                           : 'transparent',
                       fontFamily: 'Amiri-Regular',
@@ -170,19 +172,53 @@ const MelengkapiAyat = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text
+        <TouchableOpacity
           onPress={() =>
             halamanPage < 604 ? setHalamanPage(halamanPage + 1) : null
           }>
           <Avatar.Icon size={32} icon="arrow-left" />
-        </Text>
-        <Text
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setVisibleBantuan(true)}>
+          <Avatar.Icon size={32} icon="help" />
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() =>
             halamanPage > 1 ? setHalamanPage(halamanPage - 1) : null
           }>
           <Avatar.Icon size={32} icon="arrow-right" />
-        </Text>
+        </TouchableOpacity>
       </View>
+      <Modal
+        animationType="slide"
+        visible={visibleBantuan}
+        onRequestClose={() => {
+          setVisibleBantuan(false);
+        }}>
+        <View style={{ flexDirection: 'column', flex: 1 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              margin: 10,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              backgroundColor: 'lightblue',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Cara Tes Melengkapi Ayat
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleBantuan(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ padding: 20 }}>
+            <Text style={{ color: 'mediumblue', paddingBottom: 10 }}>1. Tebak dan lafazkan setiap bagian ayat yang rumpang.</Text>
+            <Text style={{ color: 'mediumblue', paddingBottom: 10 }}>2. Cek jawaban dengan klik bagian ayat yang rumpang tersebut.</Text>
+            <Text style={{ color: 'mediumblue', fontStyle: 'italic' }}>Klik tombol panah sebelumnya/selanjutnya untuk berpindah soal/halaman.</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -20,7 +20,7 @@ import { Divider, Avatar } from 'react-native-paper';
 import RenderHtml from 'react-native-render-html';
 import SoundPlayer from 'react-native-sound-player';
 
-const AyatMateri = ({ route, navigation }) => {
+const AyatMateri = ({ route }) => {
   const [surah, setSurah] = useState([]);
   const [ayat, setAyat] = useState([]);
   const [page, setPage] = useState([]);
@@ -49,7 +49,7 @@ const AyatMateri = ({ route, navigation }) => {
     setAyat(res.data.verse);
 
     res.data.verse.page_number !== page[0]?.page_number ||
-    page[0]?.page_number === undefined
+      page[0]?.page_number === undefined
       ? fetchPage(res.data.verse.page_number)
       : null;
 
@@ -71,14 +71,6 @@ const AyatMateri = ({ route, navigation }) => {
     console.log('visual');
   }
 
-  function playSound(uri) {
-    try {
-      SoundPlayer.playUrl(uri);
-    } catch (e) {
-      console.log('cannot play the song file', e);
-    }
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -88,21 +80,12 @@ const AyatMateri = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <View
-          style={{
-            paddingVertical: 3,
-            paddingHorizontal: 5,
-            backgroundColor: 'lightblue',
-            borderRadius: 5,
-            shadowRadius: 3,
-          }}>
-          <Text>
-            {route.params?.key.split(':')[0]}.{' '}
-            {surah[route.params?.key.split(':')[0] - 1]?.name_simple}
-          </Text>
-        </View>
-        <Text>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
-        <Text>Juz {ayat.juz_number}</Text>
+        <Text style={{ color: 'black' }}>
+          {route.params?.key.split(':')[0]}.{' '}
+          {surah[route.params?.key.split(':')[0] - 1]?.name_simple}
+        </Text>
+        <Text style={{ color: 'black' }}>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
+        <Text style={{ color: 'black' }}>Juz {ayat.juz_number}</Text>
       </View>
       <Divider />
       <ImageBackground
@@ -126,7 +109,47 @@ const AyatMateri = ({ route, navigation }) => {
             }}>
             {page.map((value, index) =>
               value.words?.map((val, ind) =>
-                val.line_number === i + 1 ? (
+                (val.line_number === i + 3 &&
+                  value.verse_number === 1 &&
+                  ind === 0) ||
+                  (i === 14 &&
+                    index === 0 &&
+                    ind === 0 &&
+                    val.line_number === i + 1) ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    سورۃ{'  '}
+                    {
+                      `${surah[parseInt(value.verse_key.split(':')[0]) - 1]
+                        ?.name_arabic}`
+                    }
+                  </Text>
+                ) : val.line_number === i + 2 &&
+                  value.verse_number === 1 &&
+                  ind === 0 &&  route.params?.key.split(':')[0] !== "1" && route.params?.key.split(':')[0] !== "9" ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْم
+                  </Text>
+                ) : val.line_number === i + 1 ? (
                   val.char_type_name === 'end' ? (
                     <Text
                       key={`${i}-${index}-${ind}`}
@@ -177,14 +200,14 @@ const AyatMateri = ({ route, navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text
+        <TouchableOpacity
           style={{ marginEnd: 20 }}
-          onPress={() => playSound(audioLink + ayat.audio?.url)}>
+          onPress={() => SoundPlayer.playUrl(audioLink + ayat.audio?.url)}>
           <Avatar.Icon size={32} icon="volume-high" />
-        </Text>
-        <Text onPress={() => setVisibleInfo(true)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setVisibleInfo(true)}>
           <Avatar.Icon size={32} icon="information-variant" />
-        </Text>
+        </TouchableOpacity>
       </View>
       <Modal
         animationType="slide"
@@ -203,18 +226,18 @@ const AyatMateri = ({ route, navigation }) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {surah[route.params?.key.split(':')[0] - 1]?.name_simple} ayat{' '}
               {route.params?.key.split(':')[1]}
             </Text>
-            <Text onPress={() => setVisibleInfo(false)}>
+            <TouchableOpacity onPress={() => setVisibleInfo(false)}>
               <Avatar.Icon size={32} icon="close" />
-            </Text>
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
               <View>
-                <Text style={{ fontWeight: 'bold' }}>Arti per Kata</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Arti per Kata</Text>
                 <View
                   style={{
                     marginVertical: 10,
@@ -230,10 +253,10 @@ const AyatMateri = ({ route, navigation }) => {
                         alignItems: 'center',
                       }}>
                       <Text
-                        style={{ fontFamily: 'Amiri-Regular', fontSize: 16 }}>
+                        style={{ fontFamily: 'Amiri-Regular', fontSize: 16, color: 'black' }}>
                         {value.text_uthmani}
                       </Text>
-                      <Text>{value.translation.text}</Text>
+                      <Text style={{ color: 'black' }}>{value.translation.text}</Text>
                     </View>
                   ))}
                   <View></View>
@@ -241,7 +264,7 @@ const AyatMateri = ({ route, navigation }) => {
                 <Divider />
               </View>
               <View style={{ marginTop: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Terjemah</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Terjemah</Text>
                 {ayat.translations?.map((value, index) => (
                   <View key={index} style={{ marginVertical: 10 }}>
                     <RenderHtml source={{ html: value.text }} />

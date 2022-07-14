@@ -63,21 +63,22 @@ const Surah = () => {
           paddingHorizontal: 10,
         }}>
         {visual.kata_kunci ? (
-          <Text style={{ fontWeight: 'bold' }}>{visual.kata_kunci}</Text>
+          <Text style={{ fontWeight: 'bold', color: 'black' }}>{visual.kata_kunci}</Text>
         ) : null}
-        <Text>{id}</Text>
-        <View
+        <Text style={{ color: 'black' }}>{id}</Text>
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
           style={{
             paddingVertical: 3,
-            paddingHorizontal: 5,
+            paddingHorizontal: 10,
             backgroundColor: 'lightblue',
             borderRadius: 5,
             shadowRadius: 3,
           }}>
-          <Text onPress={() => setVisible(true)}>
+          <Text style={{ color: 'black' }}>
             {surah[id - 1]?.name_simple}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <Divider />
       <View style={{ flex: 1 }}>
@@ -97,8 +98,8 @@ const Surah = () => {
               source={
                 visual.gambar
                   ? {
-                      uri: visual.gambar,
-                    }
+                    uri: visual.gambar,
+                  }
                   : require('../../assets/logo.png')
               }
             />
@@ -115,7 +116,7 @@ const Surah = () => {
               paddingVertical: 5,
               justifyContent: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {surah[id - 1]?.name_arabic}
             </Text>
           </View>
@@ -126,7 +127,7 @@ const Surah = () => {
               paddingHorizontal: 10,
               paddingVertical: 5,
             }}>
-            <Text>
+            <Text style={{ color: 'black' }}>
               {surah[id - 1]?.translated_name.name} -{' '}
               {surah[id - 1]?.verses_count} ayat
             </Text>
@@ -138,7 +139,7 @@ const Surah = () => {
               paddingHorizontal: 10,
               paddingVertical: 5,
             }}>
-            <Text>
+            <Text style={{ color: 'black' }}>
               diturunkan ke-{surah[id - 1]?.revelation_order} - golongan surah{' '}
               {surah[id - 1]?.revelation_place}
             </Text>
@@ -149,29 +150,29 @@ const Surah = () => {
               flexDirection: 'column',
               padding: 10,
             }}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', marginBottom: 10, color: 'black' }}>
               Kandungan
             </Text>
             <View style={{ marginBottom: 10 }}>
               <RenderHtml source={{ html: visual.uraian }} />
             </View>
             <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>
               Uraian Singkat
             </Text>
             <View style={{ marginBottom: 10 }}>
               <RenderHtml source={{ html: surahInfo.short_text }} />
             </View>
             <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>Uraian</Text>
+            <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>Uraian</Text>
             <View style={{ marginBottom: 10 }}>
               <RenderHtml source={{ html: surahInfo.text }} />
             </View>
             <Divider />
-            <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            <Text style={{ fontWeight: 'bold', marginTop: 10, color: 'black' }}>
               Sumber Uraian
             </Text>
-            <Text style={{ marginBottom: 10, fontStyle: 'italic' }}>
+            <Text style={{ marginBottom: 10, fontStyle: 'italic', color: 'black' }}>
               {surahInfo.source}
             </Text>
           </View>
@@ -186,12 +187,12 @@ const Surah = () => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text onPress={() => (id < 114 ? setIdSurah(id + 1) : null)}>
+        <TouchableOpacity onPress={() => (id < 114 ? setIdSurah(id + 1) : null)}>
           <Avatar.Icon size={32} icon="arrow-left" />
-        </Text>
-        <Text onPress={() => (id > 1 ? setIdSurah(id - 1) : null)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => (id > 1 ? setIdSurah(id - 1) : null)}>
           <Avatar.Icon size={32} icon="arrow-right" />
-        </Text>
+        </TouchableOpacity>
       </View>
       <Modal
         animationType="slide"
@@ -203,14 +204,19 @@ const Surah = () => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisible(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -227,7 +233,7 @@ const Surah = () => {
                     setIdSurah(i + 1);
                     setVisible(false);
                   }}>
-                  <Text>
+                  <Text style={{ color: 'black' }}>
                     {i + 1}. {surah[i].name_simple}
                   </Text>
                 </TouchableOpacity>

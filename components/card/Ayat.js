@@ -56,7 +56,7 @@ const Ayat = ({ navigation }) => {
     setAyat(res.data.verse);
 
     res.data.verse.page_number !== page[0]?.page_number ||
-    page[0]?.page_number === undefined
+      page[0]?.page_number === undefined
       ? fetchPage(res.data.verse.page_number)
       : null;
 
@@ -84,14 +84,6 @@ const Ayat = ({ navigation }) => {
     console.log('materi');
   }
 
-  function playSound(uri) {
-    try {
-      SoundPlayer.playUrl(uri);
-    } catch (e) {
-      console.log('cannot play the song file', e);
-    }
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -101,20 +93,21 @@ const Ayat = ({ navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <View
+        <TouchableOpacity
+          onPress={() => setVisibleSurah(true)}
           style={{
             paddingVertical: 3,
-            paddingHorizontal: 5,
+            paddingHorizontal: 10,
             backgroundColor: 'lightblue',
             borderRadius: 5,
             shadowRadius: 3,
           }}>
-          <Text onPress={() => setVisibleSurah(true)}>
+          <Text style={{ color: 'black' }}>
             {id}. {surah[id - 1]?.name_simple}
           </Text>
-        </View>
-        <Text>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
-        <Text>Juz {ayat.juz_number}</Text>
+        </TouchableOpacity>
+        <Text style={{ color: 'black' }}>{ayat.page_number - (ayat.juz_number * 20 - 20 + 1)}</Text>
+        <Text style={{ color: 'black' }}>Juz {ayat.juz_number}</Text>
       </View>
       <Divider />
       <ImageBackground
@@ -138,7 +131,47 @@ const Ayat = ({ navigation }) => {
             }}>
             {page.map((value, index) =>
               value.words?.map((val, ind) =>
-                val.line_number === i + 1 ? (
+                (val.line_number === i + 3 &&
+                  value.verse_number === 1 &&
+                  ind === 0) ||
+                  (i === 14 &&
+                    index === 0 &&
+                    ind === 0 &&
+                    val.line_number === i + 1) ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    سورۃ{'  '}
+                    {
+                      `${surah[parseInt(value.verse_key.split(':')[0]) - 1]
+                        ?.name_arabic}`
+                    }
+                  </Text>
+                ) : val.line_number === i + 2 &&
+                  value.verse_number === 1 &&
+                  ind === 0 && id !== 1 && id !== 9 ? (
+                  <Text
+                    key={`${i}-${index}-${ind}`}
+                    style={{
+                      textAlign: 'center',
+                      flex: 1,
+                      paddingBottom: 1,
+                      paddingHorizontal: 1,
+                      fontSize: 16,
+                      fontFamily: 'Amiri-Bold',
+                      color: 'black',
+                    }}>
+                    بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْم
+                  </Text>
+                ) : val.line_number === i + 1 ? (
                   val.char_type_name === 'end' ? (
                     <Text
                       key={`${i}-${index}-${ind}`}
@@ -189,24 +222,24 @@ const Ayat = ({ navigation }) => {
           paddingVertical: 5,
           paddingHorizontal: 10,
         }}>
-        <Text
+        <TouchableOpacity
           onPress={() =>
             nomor < surah[id - 1].verses_count ? setNomorAyat(nomor + 1) : null
           }>
           <Avatar.Icon size={32} icon="arrow-left" />
-        </Text>
-        <Text onPress={() => playSound(audioLink + ayat.audio?.url)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => SoundPlayer.playUrl(audioLink + ayat.audio?.url)}>
           <Avatar.Icon size={32} icon="volume-high" />
-        </Text>
-        <Text onPress={() => setVisibleAyat(true)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setVisibleAyat(true)}>
           <Avatar.Icon size={32} icon="magnify" />
-        </Text>
-        <Text onPress={() => setVisibleInfo(true)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setVisibleInfo(true)}>
           <Avatar.Icon size={32} icon="information-variant" />
-        </Text>
-        <Text onPress={() => (nomor > 1 ? setNomorAyat(nomor - 1) : null)}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => (nomor > 1 ? setNomorAyat(nomor - 1) : null)}>
           <Avatar.Icon size={32} icon="arrow-right" />
-        </Text>
+        </TouchableOpacity>
       </View>
       <Modal
         animationType="slide"
@@ -218,14 +251,19 @@ const Ayat = ({ navigation }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Surah</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Surah
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleSurah(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -243,7 +281,7 @@ const Ayat = ({ navigation }) => {
                     setNomorAyat(1);
                     setVisibleSurah(false);
                   }}>
-                  <Text>
+                  <Text style={{ color: 'black' }}>
                     {i + 1}. {surah[i].name_simple}
                   </Text>
                 </TouchableOpacity>
@@ -262,14 +300,19 @@ const Ayat = ({ navigation }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: 20,
-              marginTop: 20,
-              marginBottom: 10,
+              margin: 10,
               paddingVertical: 5,
+              paddingHorizontal: 10,
               backgroundColor: 'lightblue',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>Pilih Ayat</Text>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
+              Pilih Ayat
+            </Text>
+            <TouchableOpacity onPress={() => setVisibleAyat(false)}>
+              <Avatar.Icon size={32} icon="close" />
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
@@ -286,7 +329,7 @@ const Ayat = ({ navigation }) => {
                     setNomorAyat(i + 1);
                     setVisibleAyat(false);
                   }}>
-                  <Text>{i + 1}</Text>
+                  <Text style={{ color: 'black' }}>{i + 1}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -310,17 +353,17 @@ const Ayat = ({ navigation }) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {surah[id - 1]?.name_simple} ayat {nomor}
             </Text>
-            <Text onPress={() => setVisibleInfo(false)}>
+            <TouchableOpacity onPress={() => setVisibleInfo(false)}>
               <Avatar.Icon size={32} icon="close" />
-            </Text>
+            </TouchableOpacity>
           </View>
           <ScrollView>
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
               <View>
-                <Text style={{ fontWeight: 'bold' }}>Arti per Kata</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Arti per Kata</Text>
                 <View
                   style={{
                     marginVertical: 10,
@@ -336,10 +379,10 @@ const Ayat = ({ navigation }) => {
                         alignItems: 'center',
                       }}>
                       <Text
-                        style={{ fontFamily: 'Amiri-Regular', fontSize: 16 }}>
+                        style={{ fontFamily: 'Amiri-Regular', fontSize: 16, color: 'black' }}>
                         {value.text_uthmani}
                       </Text>
-                      <Text>{value.translation.text}</Text>
+                      <Text style={{ color: 'black' }}>{value.translation.text}</Text>
                     </View>
                   ))}
                   <View></View>
@@ -347,7 +390,7 @@ const Ayat = ({ navigation }) => {
                 <Divider />
               </View>
               <View style={{ marginTop: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Terjemah</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Terjemah</Text>
                 {ayat.translations?.map((value, index) => (
                   <View key={index} style={{ marginVertical: 10 }}>
                     <RenderHtml source={{ html: value.text }} />
@@ -364,7 +407,7 @@ const Ayat = ({ navigation }) => {
                   backgroundColor: 'lightblue',
                   justifyContent: 'center',
                 }}>
-                <Text style={{ fontWeight: 'bold' }}>Materi Terkait</Text>
+                <Text style={{ fontWeight: 'bold', color: 'black' }}>Materi Terkait</Text>
               </View>
               <View style={{ paddingBottom: 20 }}>
                 {materi.map((x, i) => (
@@ -380,6 +423,7 @@ const Ayat = ({ navigation }) => {
                       style={{
                         fontSize: 12,
                         fontWeight: 'bold',
+                        color: 'black',
                         paddingBottom: 5,
                       }}>
                       {x.urutan}. {x.judul}
@@ -388,31 +432,31 @@ const Ayat = ({ navigation }) => {
                     <View>
                       <RenderHtml source={{ html: x.materi }} />
                     </View>
-                    <Text
-                      style={{ fontSize: 12, color: 'blue' }}
-                      onPress={() => {
-                        setVisibleInfo(false);
-                        navigation.navigate('Materi', {
-                          pokok:
-                            x.pokok === 1
-                              ? 'Aqidah'
-                              : x.pokok === 2
+                    <TouchableOpacity onPress={() => {
+                      setVisibleInfo(false);
+                      navigation.navigate('Materi', {
+                        pokok:
+                          x.pokok === 1
+                            ? 'Aqidah'
+                            : x.pokok === 2
                               ? 'Ibadah'
                               : x.pokok === 3
-                              ? 'Muamalah'
-                              : 'Akhlaq',
-                          kategori: x.kategori,
-                          tema: {
-                            id: x.id_tema,
-                            urutan: x.urutan_tema,
-                            judul: x.judul_tema,
-                            gambar: x.gambar,
-                            referensi: x.referensi,
-                          },
-                        });
-                      }}>
-                      Baca Lengkap Materi
-                    </Text>
+                                ? 'Muamalah'
+                                : 'Akhlaq',
+                        kategori: x.kategori,
+                        tema: {
+                          id: x.id_tema,
+                          urutan: x.urutan_tema,
+                          judul: x.judul_tema,
+                          gambar: x.gambar,
+                          referensi: x.referensi,
+                        },
+                      });
+                    }}>
+                      <Text style={{ fontSize: 12, color: 'blue' }}>
+                        Baca Lengkap Materi
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 ))}
               </View>
